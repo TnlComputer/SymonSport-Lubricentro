@@ -10,9 +10,9 @@ class AdminMiddleware
 {
 public function handle(Request $request, Closure $next)
 {
-if (!Auth::check() || Auth::user()->role !== 'admin') {
-abort(403, 'No tienes permisos.');
-}
+  if (!Auth::check() || Auth::user()->role !== 'admin') {
+    abort(403, 'No tienes permisos.');
+  }
 return $next($request);
 }
 }

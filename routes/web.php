@@ -3,14 +3,14 @@
 use App\Http\Controllers\Admin\GestionUsuarioController;
 use App\Http\Controllers\Admin\ConfiguracionController;
 use App\Http\Controllers\VehiculoController;
-use App\Http\Middleware\AdminMiddleware;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ContactoController;
+use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
