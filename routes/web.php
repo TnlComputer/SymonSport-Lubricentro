@@ -1,6 +1,6 @@
 <?php
 
-    use App\Http\Controllers\Admin\GestionUsuarioController;
+use App\Http\Controllers\Admin\GestionUsuarioController;
 use App\Http\Controllers\Admin\ConfiguracionController;
 use App\Http\Controllers\VehiculoController;
 use App\Http\Middleware\AdminMiddleware;
@@ -79,19 +79,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    // Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    //     Route::resource('users', GestionUsuarioController::class);
-    //     Route::resource('config', ConfiguracionController::class);
-    // });
-// Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-//     Route::resource('users', GestionUsuarioController::class);
-//     Route::resource('config', ConfiguracionController::class);
-// });
-
-// Route::middleware(['auth', 'verified', 'admin'])
-//     ->prefix('admin')
-//     ->name('admin.')
-//     ->group(function () {
 Route::middleware(['auth', AdminMiddleware::class])
     ->prefix('admin')
     ->name('admin.')
