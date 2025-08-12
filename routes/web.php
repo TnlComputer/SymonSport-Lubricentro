@@ -1,6 +1,9 @@
 <?php
 
+    use App\Http\Controllers\Admin\GestionUsuarioController;
+use App\Http\Controllers\Admin\ConfiguracionController;
 use App\Http\Controllers\VehiculoController;
+use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\ProfileController;
@@ -75,17 +78,26 @@ Route::middleware(['auth', 'verified'])->group(function () {
     | middleware(['auth', 'is_admin'])
     |--------------------------------------------------------------------------
     */
-    Route::prefix('admin')->name('admin.')->group(function () {
-        Route::get('users', function () {
-            return '<h1>Admin: Gestión de Usuarios</h1>';
-        })->name('users.index');
 
-        Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-            Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
-        });
+    // Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    //     Route::resource('users', GestionUsuarioController::class);
+    //     Route::resource('config', ConfiguracionController::class);
+    // });
+// Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+//     Route::resource('users', GestionUsuarioController::class);
+//     Route::resource('config', ConfiguracionController::class);
+// });
 
-        Route::get('config', function () {
-            return '<h1>Admin: Configuración</h1>';
-        })->name('config');
+// Route::middleware(['auth', 'verified', 'admin'])
+//     ->prefix('admin')
+//     ->name('admin.')
+//     ->group(function () {
+Route::middleware(['auth', AdminMiddleware::class])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::resource('users', GestionUsuarioController::class);
+        Route::resource('config', ConfiguracionController::class);
     });
+
 });
