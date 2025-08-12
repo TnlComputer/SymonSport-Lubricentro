@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\VehiculoController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\ProfileController;
@@ -63,6 +64,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Pedidos
     Route::resource('pedidos', PedidoController::class);
+    // Pedidos
+    Route::resource('vehiculos', VehiculoController::class);
 
     /*
     |--------------------------------------------------------------------------

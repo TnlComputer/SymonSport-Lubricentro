@@ -46,6 +46,12 @@
       <p>Mis Pedidos</p>
     </a>
   </li>
+  <li class="nav-item">
+    <a href="{{ route('vehiculos.index') }}" class="nav-link">
+      <i class="nav-icon fas fa-car"></i>
+      <p>Mis Vehículos</p>
+    </a>
+  </li>
   @endif
 
   {{-- Separador --}}
