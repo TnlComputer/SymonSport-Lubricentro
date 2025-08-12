@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard')
+@section('title', 'home')
 
 @section('content')
-<h2>Dashboard</h2>
-<p>¡Hola, {{ auth()->user()->name }}! Bienvenido a tu panel de control.</p>
+<h2>home</h2>
+<p>¡Hola, {{ auth()->user()->name ?? 'Invitado'}}! Bienvenido a tu panel de control.</p>
 
 <hr>
 

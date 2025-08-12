@@ -1,29 +1,39 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Profile') }}
-        </h2>
-    </x-slot>
+@extends('layouts.app') {{-- Usa tu layout principal de AdminLTE --}}
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-profile-information-form')
-                </div>
-            </div>
+@section('content')
+<div class="container-fluid">
+  <h2 class="mb-4">
+    <i class="fas fa-user"></i> Perfil
+  </h2>
 
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-password-form')
-                </div>
-            </div>
-
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.delete-user-form')
-                </div>
-            </div>
-        </div>
+  {{-- Formulario: Actualizar información --}}
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      Actualizar Información
     </div>
-</x-app-layout>
+    <div class="card-body">
+      @include('profile.partials.update-profile-information-form')
+    </div>
+  </div>
+
+  {{-- Formulario: Cambiar contraseña --}}
+  <div class="card mb-4">
+    <div class="card-header bg-warning text-dark">
+      Cambiar Contraseña
+    </div>
+    <div class="card-body">
+      @include('profile.partials.update-password-form')
+    </div>
+  </div>
+
+  {{-- Formulario: Eliminar usuario --}}
+  <div class="card border-danger">
+    <div class="card-header bg-danger text-white">
+      Eliminar Cuenta
+    </div>
+    <div class="card-body">
+      @include('profile.partials.delete-user-form')
+    </div>
+  </div>
+</div>
+@endsection

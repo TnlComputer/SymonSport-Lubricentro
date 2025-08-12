@@ -5,32 +5,84 @@ use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ContactoController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 
+/*
+|--------------------------------------------------------------------------
+| Rutas Públicas
+|--------------------------------------------------------------------------
+*/
 Route::get('/', function () {
     return view('welcome');
-});
-
-Route::get('/', function () {
-    return view('home');
-})->name('home');
-
-require __DIR__.'/auth.php';
-
-Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
-
-    Route::resource('productos', ProductoController::class)->only(['index', 'show']);
-});
+})->name('welcome');
 
 Route::get('/contacto', [ContactoController::class, 'show'])->name('contacto');
 Route::post('/contacto', [ContactoController::class, 'enviar'])->name('contacto.enviar');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'show'])->name('profile');
-});
+require __DIR__ . '/auth.php';
 
-Route::middleware('auth')->group(function () {
+/*
+|--------------------------------------------------------------------------
+| Rutas de Verificación de Email
+|--------------------------------------------------------------------------
+*/
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware('auth')->name('verification.notice');
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+    return redirect()->route('home');
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return back()->with('message', 'Se ha reenviado el enlace de verificación.');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
+/*
+|--------------------------------------------------------------------------
+| Rutas Protegidas (Usuarios autenticados y verificados)
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'verified'])->group(function () {
+
+    // home
+    Route::get('/home', function () {
+        return view('home');
+    })->name('home');
+
+    // Perfil
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Productos
+    Route::resource('productos', ProductoController::class)->only(['index', 'show']);
+
+    // Pedidos
     Route::resource('pedidos', PedidoController::class);
+
+    /*
+    |--------------------------------------------------------------------------
+    | Rutas de Administrador
+    |--------------------------------------------------------------------------
+    | Puedes aplicar un middleware adicional para que solo el rol admin acceda:
+    | middleware(['auth', 'is_admin'])
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('admin')->name('admin.')->group(function () {
+        Route::get('users', function () {
+            return '<h1>Admin: Gestión de Usuarios</h1>';
+        })->name('users.index');
+
+        Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+            Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
+        });
+
+        Route::get('config', function () {
+            return '<h1>Admin: Configuración</h1>';
+        })->name('config');
+    });
 });
