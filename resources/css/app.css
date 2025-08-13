@@ -2,29 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
-
-/* Variables de color para la identidad Lubricentro */
+/* Variables de color */
 :root {
-    --color-principal: #0d6efd; /* Azul Bootstrap */
-    --color-secundario: #ffc107; /* Amarillo */
+    --color-principal: #0d6efd;
+    --color-secundario: #ffc107;
     --color-texto: #333333;
 }
 
 /* General */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     color: var(--color-texto);
     background-color: #f8f9fa;
+    line-height: 1.5;
 }
 
 /* Navbar personalizada */
-.navbar {
+.navbar,
+nav {
     background-color: var(--color-principal) !important;
-}
-
-.navbar-brand {
-    font-weight: bold;
-    font-size: 1.5rem;
+    padding: 0.75rem 1rem;
 }
 
 /* Botones personalizados */
@@ -32,24 +29,25 @@ body {
     background-color: var(--color-principal);
     border-color: var(--color-principal);
 }
-
 .btn-outline-primary {
     color: var(--color-principal);
     border-color: var(--color-principal);
 }
-
 .btn-outline-primary:hover {
     background-color: var(--color-principal);
     color: #fff;
 }
 
-/* Tarjetas de productos */
+/* Tarjetas */
 .card {
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
 }
-
+.card:hover {
+    transform: translateY(-4px);
+}
 .card-title {
     font-weight: bold;
 }
@@ -59,9 +57,94 @@ footer {
     background-color: #ffffff;
     border-top: 1px solid #ddd;
     color: #666;
+    padding: 1rem;
+    text-align: center;
 }
 
-/* Formulario de contacto */
+/* Formulario */
 form label {
     font-weight: bold;
+}
+
+/* Sidebar responsive para tablet y móvil */
+@media (max-width: 991px) {
+    body.sidebar-mini .main-sidebar,
+    body.sidebar-mini-md .main-sidebar,
+    .main-sidebar {
+        width: 60px !important;
+        transform: translateX(0) !important;
+        position: fixed !important;
+        top: 0;
+        left: 0;
+        height: 100% !important;
+        z-index: 1038 !important;
+        margin-left: 0 !important;
+    }
+
+    /* Logo y separador */
+    .main-sidebar .brand-link {
+        width: 60px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start; /* Alinear a la izquierda */
+        justify-content: center;
+        padding: 0.5rem 0;
+    }
+
+    .brand-link .brand-image {
+        float: left;
+        line-height: 0.8;
+        margin-left: -2px;
+        margin-top: -3px;
+        max-height: 33px;
+        display: block !important;
+    }
+
+    .brand-text {
+        display: none !important;
+    }
+    .brand-image {
+        display: block;
+        margin: 0 auto;
+        width: 40px;
+        height: 40px;
+    }
+
+    .main-sidebar .brand-link::after {
+        content: "";
+        display: block;
+        width: 40px;
+        /* height: 2px; */
+        background-color: rgba(255, 255, 255, 0.3);
+        margin-top: 0.25rem;
+        border-radius: 1px;
+    }
+
+    /* Mostrar solo íconos y centrar */
+    .main-sidebar .nav-icon {
+        display: inline-block !important;
+        font-size: 1.2rem;
+        margin-right: 0 !important;
+    }
+    .main-sidebar .nav-link {
+        justify-content: center !important;
+        /* text-align: center; */
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+    .main-sidebar .menu-text {
+        display: none !important;
+    }
+
+    /* Botón cerrar sesión: mantener texto */
+    .main-sidebar .nav-item.mt-auto .menu-text {
+        display: inline !important;
+    }
+
+    /* Ajustar contenido principal */
+    .content-wrapper,
+    .main-footer,
+    .main-header {
+        margin-left: 60px !important;
+    }
 }
