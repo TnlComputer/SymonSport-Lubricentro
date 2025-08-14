@@ -14,7 +14,7 @@
 
   <!-- AdminLTE -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
-
+  <link rel="stylesheet" href="{{ asset('./css/app.css') }}">
   <!-- Tus estilos -->
   @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -37,14 +37,25 @@
     </div>
 
     <!-- Footer -->
-    <footer class="main-footer text-center py-3 mt-auto">
-      <small>© 2025 Lubricentro - Todos los derechos reservados</small>
-    </footer>
-  </div>
+    <footer class="main-footer py-5 mt-auto bg-light">
+      <div class="container position-relative d-flex align-items-center">
+        <!-- Texto centrado -->
+        <small class="mx-auto text-center">
+          © 2025 Lubricentro - Todos los derechos reservados
+        </small>
 
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+        <!-- QR a la derecha -->
+        <a class="afip position-absolute end-0" href="http://qr.afip.gob.ar/?qr=FQNxsrMFMu2Jj0XuTMYpsQ,,"
+          target="_F960AFIPInfo">
+          <img src="https://www.afip.gob.ar/images/f960/DATAWEB.jpg" alt="QR AFIP" class="logo-afip img-fluid">
+        </a>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
 </body>
+
 
 </html>

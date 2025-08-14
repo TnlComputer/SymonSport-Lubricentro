@@ -1,61 +1,62 @@
 <?php
-
 namespace App\Http\Controllers;
 
+use App\Models\Vehiculo;
 use Illuminate\Http\Request;
 
 class VehiculoController extends Controller
 {
-        public function index()
+    public function index()
     {
-      return view('vehiculos.index');    
+        $vehiculos = Vehiculo::all();
+        return view('vehiculos.index', compact('vehiculos'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('vehiculos.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'marca' => 'required|string|max:255',
+            'modelo' => 'required|string|max:255',
+            'patente' => 'required|string|unique:vehiculos,patente', // sin $vehiculo->id
+            'anio' => 'nullable|integer',
+            'kilometraje' => 'nullable|integer|min:0',
+        ]);
+
+Vehiculo::create($request->all());
+
+return redirect()->route('vehiculos.index')->with('success', 'Vehículo creado.');
+
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit(Vehiculo $vehiculo)
     {
-        //
+        return view('vehiculos.edit', compact('vehiculo'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, Vehiculo $vehiculo)
     {
-        //
+      
+        $request->validate([
+            'marca' => 'required|string|max:255',
+            'modelo' => 'required|string|max:255',
+            'patente' => 'required|string|unique:vehiculos,patente,' . $vehiculo->id,
+            'anio' => 'nullable|integer',
+            'kilometraje' => 'nullable|integer|min:0',
+        ]);
+
+        $vehiculo->update($request->all());
+
+        return redirect()->route('vehiculos.index')->with('success', 'Vehículo actualizado.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy(Vehiculo $vehiculo)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $vehiculo->delete();
+        return redirect()->route('vehiculos.index')->with('success', 'Vehículo eliminado.');
     }
 }

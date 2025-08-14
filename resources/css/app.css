@@ -61,6 +61,15 @@ footer {
     text-align: center;
 }
 
+.logo-afip {
+    width: 40px; /* tamaño reducido */
+    height: auto;
+    transition: transform 0.3s ease-in-out;
+}
+.logo-afip:hover {
+    transform: scale(1.05);
+}
+
 /* Formulario */
 form label {
     font-weight: bold;
