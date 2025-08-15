@@ -12,11 +12,17 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable;
 
+    public function scopeClientes($query)
+    {
+        return $query->where('role', 'user');
+    }
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int,string>
      */
+  
     protected $fillable = [
         'name',
         'email',

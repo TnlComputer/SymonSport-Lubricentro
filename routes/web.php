@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\GestionUsuarioController;
 use App\Http\Controllers\Admin\ConfiguracionController;
+use App\Http\Controllers\TurnoController;
 use App\Http\Controllers\VehiculoController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\ProfileController;
@@ -23,6 +24,7 @@ Route::get('/', function () {
 
 Route::get('/contacto', [ContactoController::class, 'show'])->name('contacto');
 Route::post('/contacto', [ContactoController::class, 'enviar'])->name('contacto.enviar');
+Route::resource('turnos', TurnoController::class);
 
 require __DIR__ . '/auth.php';
 

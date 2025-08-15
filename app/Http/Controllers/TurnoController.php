@@ -2,63 +2,48 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Turno;
+use App\Models\Servicio;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class TurnoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $turnos = Turno::with('cliente')->get();
+        return view('turnos.index', compact('turnos'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        $clientes = User::where('role', 'user')->get();
+        $servicios = Servicio::all();
+        return view('turnos.create', compact('clientes', 'servicios'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'cliente_id' => 'required|exists:users,id',
+            'tipo_turno' => 'required|in:lubricentro,mecanica ligera,mecanica pesada',
+            'fecha' => 'required|date',
+            'hora' => 'required',
+            'servicio_id' => 'required|exists:servicios,id',
+            'status' => 'nullable|in:pendiente,confirmado,completado,cancelado'
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        $servicio = Servicio::find($request->servicio_id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+        Turno::create([
+            'cliente_id' => $request->cliente_id,
+            'tipo_turno' => $request->tipo_turno,
+            'fecha' => $request->fecha,
+            'hora' => $request->hora,
+            'duracion' => $servicio->duracion,
+            'status' => $request->status ?? 'pendiente'
+        ]);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return redirect()->route('turnos.index')->with('success', 'Turno creado correctamente');
     }
 }
