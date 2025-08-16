@@ -7,64 +7,61 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-// class User extends Authenticatable
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable;
+  use HasFactory, Notifiable;
 
-    public function scopeClientes($query)
-    {
-        return $query->where('role', 'user');
-    }
+  protected $fillable = [
+    'name',
+    'email',
+    'password',
+    'role',
+  ];
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int,string>
-     */
-  
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'role',   // <-- agregar aquí para poder asignar el role
-    ];
+  protected $hidden = [
+    'password',
+    'remember_token',
+  ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int,string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+  protected $casts = [
+    'email_verified_at' => 'datetime',
+    'password' => 'hashed',
+  ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string,string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-    ];
+  const ROLE_ADMIN = 'admin';
+  const ROLE_USER = 'user';
 
-    const ROLE_ADMIN = 'admin';
-    const ROLE_USER = 'user';
+  public function isAdmin()
+  {
+    return $this->role === self::ROLE_ADMIN;
+  }
 
-    public function isAdmin()
-    {
-        return $this->role === self::ROLE_ADMIN;
-    }
+  public function isUser()
+  {
+    return $this->role === self::ROLE_USER;
+  }
 
-    public function isUser()
-    {
-        return $this->role === self::ROLE_USER;
-    }
+  public function getEmailVerifiedAtFormattedAttribute()
+  {
+    return $this->email_verified_at ? $this->email_verified_at->format('d-m-Y H:i') : null;
+  }
 
-    public function getEmailVerifiedAtFormattedAttribute()
-    {
-        return $this->email_verified_at ? $this->email_verified_at->format('d-m-Y H:i') : null;
-    }
+  // Relación con turnos
+  public function turnos()
+  {
+    return $this->hasMany(Turno::class, 'cliente_id');
+  }
+
+
+  // Relación con servicios
+  public function servicios()
+  {
+    return $this->hasMany(Servicio::class, 'cliente_id');
+  }
+
+  // Scope para obtener solo clientes
+  public function scopeClientes($query)
+  {
+    return $query->where('role', self::ROLE_USER);
+  }
 }
