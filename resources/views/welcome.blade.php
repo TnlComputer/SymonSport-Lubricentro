@@ -12,7 +12,13 @@
   </p>
 
   <div class="mb-4 flex justify-center">
-    <img src="{{ asset('build/img/foto1.jpg') }}" alt="Lubricentro Symon Sport" class="img-fluid rounded shadow-lg"
+    <img src="{{ asset('build/img/foto9.jpg') }}" alt="Lubricentro Symon Sport" class="img-fluid rounded shadow-lg"
+      style="max-height: 400px; object-fit: cover;">
+    <img src="{{ asset('build/img/foto8.jpg') }}" alt="Lubricentro Symon Sport" class="img-fluid rounded shadow-lg"
+      style="max-height: 400px; object-fit: cover;">
+    <!-- <img src="{{ asset('build/img/foto3.jpg') }}" alt="Lubricentro Symon Sport" class="img-fluid rounded shadow-lg"
+      style="max-height: 400px; object-fit: cover;"> -->
+    <img src="{{ asset('build/img/foto4.jpg') }}" alt="Lubricentro Symon Sport" class="img-fluid rounded shadow-lg"
       style="max-height: 400px; object-fit: cover;">
   </div>
 

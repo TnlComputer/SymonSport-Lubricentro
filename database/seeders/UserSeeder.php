@@ -23,9 +23,27 @@ class UserSeeder extends Seeder
 
     // Usuario normal
     User::updateOrCreate(
-      ['email' => 'tnlcomputer@gmail.com'],
+      ['email' => 'tnlcomputer@hotmail.com'],
       [
         'name' => 'Usuario TNL',
+        'password' => bcrypt('Camisa00@'),
+        'role' => User::ROLE_USER,
+        'email_verified_at' => Carbon::now(),
+      ]
+    );
+    User::updateOrCreate(
+      ['email' => 'tnlcomputer@gmail.com'],
+      [
+        'name' => 'Jorge',
+        'password' => bcrypt('Camisa00@'),
+        'role' => User::ROLE_USER,
+        'email_verified_at' => Carbon::now(),
+      ]
+    );
+    User::updateOrCreate(
+      ['email' => 'jgmartinez1965@gmail.com'],
+      [
+        'name' => 'Jorge Martinez',
         'password' => bcrypt('Camisa00@'),
         'role' => User::ROLE_USER,
         'email_verified_at' => Carbon::now(),
