@@ -3,17 +3,20 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\TipoTurno; // 👈 falta esto
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
-    public function run(): void
-    {
-        $this->call([
-            ServiciosSeeder::class, // Seeder de servicios
-            UserSeeder::class,      // Seeder de usuario admin
-        ]);
-    }
+  /**
+   * Seed the application's database.
+   */
+  public function run(): void
+  {
+    $this->call([
+    TipoTurnoSeeder::class,
+    ServiciosSeeder::class,
+    UserSeeder::class,
+]);
+
+  }
 }

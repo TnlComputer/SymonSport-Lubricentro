@@ -22,11 +22,18 @@
   </a>
 </li>
 <li class="nav-item">
+  <a href="{{ route('turnos.index') }}" class="nav-link">
+    <i class="nav-icon fas fa-calendar-alt"></i>
+    <span class="menu-text">Turnos</span>
+  </a>
+</li>
+<li class="nav-item">
   <a href="{{ route('admin.config.index') }}" class="nav-link">
     <i class="nav-icon fas fa-cogs"></i>
     <span class="menu-text">Configuraciones</span>
   </a>
 </li>
+
 @else
 <li class="nav-item">
   <a href="{{ route('profile.edit') }}" class="nav-link">
@@ -40,6 +47,13 @@
     <span class="menu-text">Pedidos</span>
   </a>
 </li>
+<li class="nav-item">
+  <a href="{{ route('turnos.index') }}" class="nav-link">
+    <i class="nav-icon fas fa-calendar-alt"></i>
+    <span class="menu-text">Turnos</span>
+  </a>
+</li>
+
 <li class="nav-item">
   <a href="{{ route('vehiculos.index') }}" class="nav-link">
     <i class="nav-icon fas fa-car"></i>

@@ -3,47 +3,102 @@
 namespace App\Http\Controllers;
 
 use App\Models\Turno;
-use App\Models\Servicio;
+use App\Models\TipoTurno;
 use App\Models\User;
+use App\Models\Vehiculo;
+use App\Models\Servicio;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 class TurnoController extends Controller
 {
-    public function index()
-    {
-        $turnos = Turno::with('cliente')->get();
-        return view('turnos.index', compact('turnos'));
+  // Mostrar todos los turnos
+  public function index()
+  {
+    $user = Auth::user();
+
+    if ($user->role === 'admin') {
+      // Admin: ver todos los turnos
+      $turnos = Turno::with(['cliente', 'servicios', 'vehiculo'])
+        ->orderBy('fecha', 'asc')
+        ->orderBy('hora', 'asc')
+        ->get();
+    } else {
+      // Usuario normal: solo sus turnos
+      $turnos = Turno::with(['servicios', 'vehiculo'])
+        ->where('cliente_id', $user->id)
+        ->orderBy('fecha', 'asc')
+        ->orderBy('hora', 'asc')
+        ->get();
     }
 
-    public function create()
-    {
-        $clientes = User::where('role', 'user')->get();
-        $servicios = Servicio::all();
-        return view('turnos.create', compact('clientes', 'servicios'));
-    }
+    return view('turnos.index', compact('turnos'));
+  }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'cliente_id' => 'required|exists:users,id',
-            'tipo_turno' => 'required|in:lubricentro,mecanica ligera,mecanica pesada',
-            'fecha' => 'required|date',
-            'hora' => 'required',
-            'servicio_id' => 'required|exists:servicios,id',
-            'status' => 'nullable|in:pendiente,confirmado,completado,cancelado'
-        ]);
+  // Formulario para crear turno
+  public function create()
+  {
+    $tipoTurnos = TipoTurno::all();
+    $clientes = User::where('role', 'user')->get(); // solo clientes
+    $vehiculos = Vehiculo::all();
+    $servicios = Servicio::all(); // TODOS los servicios
+    return view('turnos.create', compact('tipoTurnos', 'clientes', 'vehiculos', 'servicios'));
+  }
 
-        $servicio = Servicio::find($request->servicio_id);
+  public function store(Request $request)
+  {
+    $request->validate([
+      'fecha' => 'required|date',
+      'hora' => 'required',
+      'tipos_turno' => 'required|array',
+    ]);
 
-        Turno::create([
-            'cliente_id' => $request->cliente_id,
-            'tipo_turno' => $request->tipo_turno,
-            'fecha' => $request->fecha,
-            'hora' => $request->hora,
-            'duracion' => $servicio->duracion,
-            'status' => $request->status ?? 'pendiente'
-        ]);
+    $turno = Turno::create($request->all());
 
-        return redirect()->route('turnos.index')->with('success', 'Turno creado correctamente');
-    }
+    // Asignar los tipos de turno
+    $turno->tiposTurno()->sync($request->tipos_turno);
+
+    return redirect()->route('turnos.index')->with('success', 'Turno creado correctamente.');
+  }
+
+  public function edit(Turno $turno)
+  {
+    $tipoTurnos = TipoTurno::all();
+    $clientes = User::where('role', 'user')->get();
+    $vehiculos = Vehiculo::all();
+    $servicios = Servicio::all();
+    return view('turnos.edit', compact('turno', 'tipoTurnos', 'clientes', 'vehiculos', 'servicios'));
+  }
+
+  public function update(Request $request, Turno $turno)
+  {
+    $request->validate([
+      'fecha' => 'required|date',
+      'hora' => 'required',
+      'tipos_turno' => 'required|array',
+      'servicios' => 'required|array',
+    ]);
+
+    // Actualizar fecha, hora y cliente/vehículo si querés
+    $turno->fecha = $request->fecha;
+    $turno->hora = $request->hora;
+    $turno->cliente_id = $request->cliente_id;
+    $turno->vehiculo_id = $request->vehiculo_id;
+    $turno->status = $request->status;
+    $turno->save();
+
+    // Guardar relaciones muchos a muchos
+    $turno->tiposTurno()->sync($request->tipos_turno);
+    $turno->servicios()->sync($request->servicios);
+
+    return redirect()->route('home')->with('success', 'Turno actualizado correctamente.');
+  }
+
+  // Eliminar turno (soft delete)
+  public function destroy(Turno $turno)
+  {
+    $turno->delete();
+    return redirect()->route('turnos.index')->with('success', 'Turno eliminado correctamente');
+  }
 }
