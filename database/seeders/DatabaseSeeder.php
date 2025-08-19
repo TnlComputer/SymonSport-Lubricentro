@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
+
 use Illuminate\Database\Seeder;
-use App\Models\TipoTurno; // 👈 falta esto
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,11 +12,15 @@ class DatabaseSeeder extends Seeder
    */
   public function run(): void
   {
-    $this->call([
-    TipoTurnoSeeder::class,
-    ServiciosSeeder::class,
-    UserSeeder::class,
-]);
 
+    $this->call([
+      UsersSeeder::class,
+      ProductosSeeder::class,
+      ServiciosSeeder::class,
+      VehiculosSeeder::class,
+      TipoTurnoSeeder::class,
+      TurnosSeeder::class,
+      TrabajosServicioSeeder::class,
+    ]);
   }
 }

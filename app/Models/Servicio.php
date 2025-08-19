@@ -1,16 +1,32 @@
 <?php
 
-// app/Models/Servicio.php
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Servicio extends Model
 {
-  protected $fillable = ['nombre', 'tipo_turno', 'duracion'];
+    use HasFactory;
 
-  public function turnos()
-  {
-    return $this->belongsToMany(Turno::class, 'servicio_turno');
-  }
+    protected $fillable = [
+        'nombre',
+        'duracion',
+        'tipo_turno_id',
+    ];
+
+    public function tipoTurno()
+    {
+        return $this->belongsTo(TipoTurno::class);
+    }
+
+    public function trabajos()
+    {
+        return $this->hasMany(TrabajoServicio::class);
+    }
+
+    public function turnos()
+    {
+        return $this->belongsToMany(Turno::class, 'servicio_turno');
+    }
 }

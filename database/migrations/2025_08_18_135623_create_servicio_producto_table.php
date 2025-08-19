@@ -8,17 +8,19 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('servicio_turno', function (Blueprint $table) {
+        Schema::create('servicio_producto', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('turno_id')->constrained('turnos')->onDelete('cascade');
             $table->foreignId('servicio_id')->constrained('servicios')->onDelete('cascade');
+            $table->foreignId('producto_id')->constrained('productos')->onDelete('cascade');
+            $table->integer('cantidad')->default(1);
+               $table->boolean('activo')->default(1); // 1 = activo, 0 = eliminado
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('servicio_turno');
+        Schema::dropIfExists('servicio_producto');
     }
 };
 

@@ -10,15 +10,14 @@ return new class extends Migration
     {
         Schema::create('productos', function (Blueprint $table) {
             $table->id();
-            $table->string('articulo')->unique();
+            $table->string('nombre');
             $table->string('descripcion');
-            $table->decimal('costo', 10, 2);
-            $table->decimal('venta', 10, 2);
-            $table->string('proveedor')->nullable();
-            $table->integer('stock_minimo')->default(0);
-            $table->integer('stock_maximo')->nullable();
-            $table->integer('stock')->default(0);
-            $table->boolean('status')->default(true); // true = activo, false = inactivo
+            $table->decimal('precio', 10, 2);
+            $table->integer('stock');
+            $table->integer('stock_min')->default(0);
+            $table->integer('stock_max')->default(0);
+            $table->decimal('costo', 10, 2)->default(0);
+               $table->boolean('activo')->default(1); // 1 = activo, 0 = eliminado
             $table->timestamps();
         });
     }

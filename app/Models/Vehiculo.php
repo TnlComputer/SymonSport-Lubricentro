@@ -9,6 +9,22 @@ class Vehiculo extends Model
 {
     use HasFactory;
 
-protected $fillable = ['marca', 'modelo', 'patente', 'anio', 'kilometraje'];
+    protected $fillable = [
+        'patente',
+        'marca',
+        'modelo',
+        'anio',
+        'observaciones',
+        'user_id',
+    ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function trabajos()
+    {
+        return $this->hasMany(TrabajoServicio::class);
+    }
 }

@@ -1,96 +1,86 @@
 <?php
 
-use App\Http\Controllers\Admin\GestionUsuarioController;
 use App\Http\Controllers\Admin\ConfiguracionController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\TurnoController;
 use App\Http\Controllers\VehiculoController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ContactoController;
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ServicioController;
+use App\Http\Controllers\TrabajoServicioController;
+
 use App\Http\Middleware\AdminMiddleware;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
-/*
-|--------------------------------------------------------------------------
-| Rutas Públicas
-|--------------------------------------------------------------------------
-*/
-
-Route::get('/', function () {
-  return view('welcome');
-})->name('welcome');
-
-
-Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware('auth');
+// -------------------
+// Rutas públicas
+// -------------------
+Route::get('/', fn() => view('welcome'))->name('welcome');
 
 Route::get('/contacto', [ContactoController::class, 'show'])->name('contacto');
 Route::post('/contacto', [ContactoController::class, 'enviar'])->name('contacto.enviar');
-Route::resource('turnos', TurnoController::class);
 
-require __DIR__ . '/auth.php';
-
-/*
-|--------------------------------------------------------------------------
-| Rutas de Verificación de Email
-|--------------------------------------------------------------------------
-*/
-Route::get('/email/verify', function () {
-  return view('auth.verify-email');
-})->middleware('auth')->name('verification.notice');
-
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-  $request->fulfill();
-  return redirect()->route('home');
-})->middleware(['auth', 'signed'])->name('verification.verify');
-
-Route::post('/email/verification-notification', function (Request $request) {
-  $request->user()->sendEmailVerificationNotification();
-  return back()->with('message', 'Se ha reenviado el enlace de verificación.');
-})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
-
-/*
-|--------------------------------------------------------------------------
-| Rutas Protegidas (Usuarios autenticados y verificados)
-|--------------------------------------------------------------------------
-*/
-Route::middleware(['auth', 'verified'])->group(function () {
-
-  // home
-  // Route::get('/home', function () {
-  //   return view('home');
-  // })->name('home');
+// -------------------
+// Rutas autenticadas
+// -------------------
+Route::middleware(['auth'])->group(function () {
 
   // Perfil
   Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
   Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
   Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-  // Productos
-  Route::resource('productos', ProductoController::class)->only(['index', 'show']);
-
-  // Pedidos
-  Route::resource('pedidos', PedidoController::class);
-  // Pedidos
+  // Vehículos, Turnos, Servicios, Trabajos
   Route::resource('vehiculos', VehiculoController::class);
+  Route::resource('turnos', TurnoController::class);
+  Route::resource('servicios', ServicioController::class)->except(['destroy', 'show']);
+  Route::resource('trabajos', TrabajoServicioController::class)->except(['destroy', 'edit', 'update']);
 
-  /*
-    |--------------------------------------------------------------------------
-    | Rutas de Administrador
-    |--------------------------------------------------------------------------
-    | Puedes aplicar un middleware adicional para que solo el rol admin acceda:
-    | middleware(['auth', 'is_admin'])
-    |--------------------------------------------------------------------------
-    */
-
-  Route::middleware(['auth', AdminMiddleware::class])
-    ->prefix('admin')
-    ->name('admin.')
-    ->group(function () {
-      Route::resource('users', GestionUsuarioController::class);
-      Route::resource('config', ConfiguracionController::class);
-    });
+  // Pedidos y Productos
+  Route::resource('pedidos', PedidoController::class);
+  Route::resource('productos', ProductoController::class)->only(['index', 'show']);
 });
+
+// -------------------
+// Rutas de administrador
+// -------------------
+Route::middleware(['auth', AdminMiddleware::class])
+  ->prefix('admin')
+  ->name('admin.')
+  ->group(function () {
+    Route::resource('users', UserController::class);
+    Route::resource('config', ConfiguracionController::class);
+  });
+
+// -------------------
+// Rutas de verificación de email
+// -------------------
+Route::middleware(['auth'])->group(function () {
+  Route::get('/email/verify', fn() => view('auth.verify-email'))->name('verification.notice');
+
+  Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+    return redirect()->route('home');
+  })->middleware(['signed'])->name('verification.verify');
+
+  Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return back()->with('message', 'Se ha reenviado el enlace de verificación.');
+  })->middleware('throttle:6,1')->name('verification.send');
+});
+
+// -------------------
+// Rutas protegidas para usuarios autenticados y verificados
+// -------------------
+Route::middleware(['auth', 'verified'])->group(function () {
+  Route::get('/home', fn() => view('home'))->name('home');
+});
+
+// -------------------
+// Autenticación (Laravel Breeze / Jetstream)
+// -------------------
+require __DIR__ . '/auth.php';

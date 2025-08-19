@@ -6,16 +6,20 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable
 {
   use HasFactory, Notifiable;
 
   protected $fillable = [
-    'name',
+    'nombre',
     'email',
     'password',
     'role',
+    'telefono',
+    'celular',
+    'horario_atencion',
   ];
 
   protected $hidden = [
@@ -25,43 +29,26 @@ class User extends Authenticatable implements MustVerifyEmail
 
   protected $casts = [
     'email_verified_at' => 'datetime',
-    'password' => 'hashed',
   ];
 
-  const ROLE_ADMIN = 'admin';
-  const ROLE_USER = 'user';
-
-  public function isAdmin()
+  // Accesor opcional para admin
+  public function getIsAdminAttribute(): bool
   {
-    return $this->role === self::ROLE_ADMIN;
+    return $this->role === 'admin';
   }
 
-  public function isUser()
+  public function turnos(): HasMany
   {
-    return $this->role === self::ROLE_USER;
+    return $this->hasMany(Turno::class, 'usuario_id');
   }
 
-  public function getEmailVerifiedAtFormattedAttribute()
+  public function vehiculos(): HasMany
   {
-    return $this->email_verified_at ? $this->email_verified_at->format('d-m-Y H:i') : null;
+    return $this->hasMany(Vehiculo::class);
   }
 
-  // Relación con turnos
-  public function turnos()
+  public function trabajos(): HasMany
   {
-    return $this->hasMany(Turno::class, 'cliente_id');
-  }
-
-
-  // Relación con servicios
-  public function servicios()
-  {
-    return $this->hasMany(Servicio::class, 'cliente_id');
-  }
-
-  // Scope para obtener solo clientes
-  public function scopeClientes($query)
-  {
-    return $query->where('role', self::ROLE_USER);
+    return $this->hasMany(TrabajoServicio::class);
   }
 }

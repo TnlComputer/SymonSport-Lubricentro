@@ -10,16 +10,19 @@ class ServiciosSeeder extends Seeder
     public function run()
     {
         $servicios = [
-            ['tipo_turno' => 'lubricentro', 'nombre' => 'Cambio de aceite', 'duracion' => 30],
-            ['tipo_turno' => 'lubricentro', 'nombre' => 'Cambio de filtro de aire', 'duracion' => 20],
-            ['tipo_turno' => 'mecanica_ligera', 'nombre' => 'Cambio de pastillas de freno', 'duracion' => 60],
-            ['tipo_turno' => 'mecanica_pesada', 'nombre' => 'Reparación de motor', 'duracion' => 300],
+            ['nombre' => 'Cambio de aceite', 'tipo_servicio' => 'lubricentro', 'duracion' => 30],
+            ['nombre' => 'Cambio de filtro de aire', 'tipo_servicio' => 'lubricentro', 'duracion' => 20],
+            ['nombre' => 'Cambio de pastillas de freno', 'tipo_servicio' => 'mecanica_ligera', 'duracion' => 60],
+            ['nombre' => 'Reparación de motor', 'tipo_servicio' => 'mecanica_pesada', 'duracion' => 300],
         ];
 
-        foreach ($servicios as $servicio) {
+        foreach ($servicios as $s) {
             Servicio::updateOrCreate(
-                ['tipo_turno' => $servicio['tipo_turno'], 'nombre' => $servicio['nombre']],
-                ['duracion' => $servicio['duracion']]
+                ['nombre' => $s['nombre']],
+                [
+                    'tipo_servicio' => $s['tipo_servicio'],
+                    'duracion' => $s['duracion'],
+                ]
             );
         }
     }

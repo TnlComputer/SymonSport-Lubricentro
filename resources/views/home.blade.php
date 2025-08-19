@@ -9,7 +9,7 @@
         </h2>
 
         <div class="alert alert-info">
-            <strong>¡Hola {{ auth()->user()->name ?? 'Invitado' }}!</strong>
+            <strong>¡Hola {{ auth()->user()->nombre ?? 'Invitado' }}!</strong>
             Bienvenido a tu panel de control.
         </div>
 
@@ -24,9 +24,9 @@
 
                 <h6 class="mb-3 mt-5">Próximos turnos</h6>
 
-                @if ($turnosFuturos->isEmpty())
+                @if (isset($turnosFuturos) && $turnosFuturos->isEmpty())
                     <p>{{ $mensaje }}</p>
-                @else
+                @elseif(isset($turnosFuturos))
                     <div class="row">
                         @foreach ($turnosFuturos->sortBy(['fecha', 'hora']) as $turno)
                             <div class="col-md-4 mb-3">

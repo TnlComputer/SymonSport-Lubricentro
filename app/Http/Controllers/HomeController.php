@@ -2,44 +2,42 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Turno;
-use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
-  public function index()
-  {
-    $user = Auth::user();
-    $mensaje = null;
+    public function index()
+    {
+        $user = Auth::user();
 
-    if ($user->role === 'user') {
-      // Turnos futuros del propio usuario
-      $turnosFuturos = Turno::with(['tiposTurno', 'servicios', 'vehiculo'])
-        ->where('cliente_id', $user->id)
-        ->where('fecha', '>=', Carbon::now())
-        ->orderBy('fecha', 'asc')
-        ->orderBy('hora', 'asc')
-        ->get();
+        // Inicializamos variables por defecto
+        $turnosFuturos = collect();
+        $mensaje = 'No hay turnos próximos.';
 
-      if ($turnosFuturos->isEmpty()) {
-        $mensaje = 'No tenés turnos registrados.';
-      }
-    } else {
-      // Admin: todos los turnos futuros de todos los usuarios
-      $turnosFuturos = Turno::with(['cliente', 'tiposTurno', 'servicios', 'vehiculo'])
-        ->where('fecha', '>=', Carbon::now())
-        ->orderBy('fecha', 'asc')
-        ->orderBy('hora', 'asc')
-        ->get();
+        if ($user) {
+            if ($user->role === 'admin') {
+                // Admin ve todos los turnos futuros
+                $turnosFuturos = Turno::whereDate('fecha_hora', '>=', now())->get();
+            } else {
+                $turnosFuturos = Turno::whereDate('fecha_hora', '>=', now())->get();
+                // Usuario ve solo sus turnos futuros
+                // if (method_exists($user, 'turnos')) {
+                //     $turnosFuturos = $user->turnos()
+                //         ->whereDate('fecha_hora', '>=', now())
+                //         ->get();
+                // }
+            }
 
-      if ($turnosFuturos->isEmpty()) {
-        $mensaje = 'No hay turnos registrados.';
-      }
+            // Actualizamos mensaje si hay turnos
+            if ($turnosFuturos->isNotEmpty()) {
+                $mensaje = '';
+            }
+        }
+        dd(get_class($user));  // Ver qué clase de modelo es realmente
+        dd(method_exists($user, 'turnos')); // Esto debería dar true
+
+        return view('home', compact('turnosFuturos', 'mensaje'));
     }
-
-    return view('home', compact('turnosFuturos', 'mensaje'));
-  }
 }
-
