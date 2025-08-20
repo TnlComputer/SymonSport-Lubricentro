@@ -24,11 +24,6 @@ class TrabajoServicio extends Model
 
     protected $dates = ['fecha'];
 
-    public function vehiculo()
-    {
-        return $this->belongsTo(Vehiculo::class);
-    }
-
     public function turno()
     {
         return $this->belongsTo(Turno::class);

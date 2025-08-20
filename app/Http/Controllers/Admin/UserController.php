@@ -71,4 +71,11 @@ class UserController extends Controller
         return redirect()->route('admin.users.index')
             ->with('success', 'Usuario desactivado correctamente.');
     }
+
+    public function vehiculos($id)
+    {
+        $user = \App\Models\User::with('vehiculos')->findOrFail($id);
+
+        return response()->json($user->vehiculos);
+    }
 }

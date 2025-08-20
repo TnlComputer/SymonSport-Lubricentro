@@ -6,6 +6,7 @@ use App\Models\Vehiculo;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class VehiculoController extends Controller
 {
@@ -13,23 +14,6 @@ class VehiculoController extends Controller
     {
         $this->authorizeResource(Vehiculo::class, 'vehiculo');
     }
-
-    // public function index()
-    // {
-    //     if (Auth::user()->is_admin) {
-    //         // Todos los vehículos con su usuario, ordenados por nombre de usuario
-    //         $vehiculos = \App\Models\Vehiculo::with('user')
-    //             ->join('users', 'vehiculos.user_id', '=', 'users.id')
-    //             ->orderBy('users.nombre')
-    //             ->select('vehiculos.*') // importante para no traer columnas duplicadas
-    //             ->get();
-    //     } else {
-    //         // Solo los vehículos del usuario autenticado
-    //         $vehiculos = Auth::user()->vehiculos()->get();
-    //     }
-
-    //     return view('vehiculos.index', compact('vehiculos'));
-    // }
 
     public function index()
     {
@@ -50,13 +34,14 @@ class VehiculoController extends Controller
 
     public function create(Request $request)
     {
+        $userId = $request->input('user_id');
+
         if (Auth::user()->is_admin) {
             // El admin debe seleccionar el usuario para el nuevo vehículo
-            $userId = $request->input('user_id');
             $usuarios = User::orderBy('nombre')->get();
             return view('vehiculos.create', compact('usuarios', 'userId'));
         }
-        return view('vehiculos.create');
+        return view('vehiculos.create', compact('userId'));
     }
 
     public function store(Request $request)
@@ -64,6 +49,7 @@ class VehiculoController extends Controller
         $data = $request->validate([
             'marca' => 'required|string|max:255',
             'modelo' => 'required|string|max:255',
+            'anio' => 'nullable|integer',
             'patente' => 'required|string|max:20|unique:vehiculos',
             'observaciones' => 'nullable|string',
             'user_id' => Auth::user()->is_admin ? 'required|exists:users,id' : '',
@@ -84,6 +70,30 @@ class VehiculoController extends Controller
     }
 
 
+    public function storeAjax(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'patente' => 'required|unique:vehiculos,patente',
+            'marca' => 'required',
+            'modelo' => 'required',
+            'anio' => 'required|integer|min:1900|max:' . date('Y'),
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $vehiculo = Vehiculo::create($request->all());
+
+        return response()->json([
+            'success' => true,
+            'vehiculo' => $vehiculo
+        ]);
+    }
+
     public function show(Vehiculo $vehiculo)
     {
         return view('vehiculos.show', compact('vehiculo'));
@@ -103,6 +113,7 @@ class VehiculoController extends Controller
         $rules = [
             'marca' => 'required|string|max:255',
             'modelo' => 'required|string|max:255',
+            'anio' => 'nullable|integer',
             'patente' => 'required|string|max:20|unique:vehiculos,patente,' . $vehiculo->id,
             'observaciones' => 'nullable|string',
         ];

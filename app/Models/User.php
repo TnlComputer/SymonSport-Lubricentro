@@ -42,13 +42,18 @@ class User extends Authenticatable
     return $this->hasMany(Turno::class, 'usuario_id');
   }
 
-  public function vehiculos(): HasMany
-  {
-    return $this->hasMany(Vehiculo::class);
-  }
+  // public function vehiculos(): HasMany
+  // {
+  //   return $this->hasMany(Vehiculo::class);
+  // }
 
   public function trabajos(): HasMany
   {
     return $this->hasMany(TrabajoServicio::class);
+  }
+
+  public function vehiculos()
+  {
+    return $this->hasMany(\App\Models\Vehiculo::class, 'user_id');
   }
 }

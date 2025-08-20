@@ -15,8 +15,8 @@ class TipoTurno extends Model
         'nombre',
     ];
 
-    public function tiposTurno()
-    {
-        return $this->belongsToMany(TipoTurno::class, 'turno_tipo_turno', 'turno_id', 'tipo_turno_id');
-    }
+public function turnos()
+{
+    return $this->belongsToMany(Turno::class, 'turno_tipo', 'tipo_turno_id', 'turno_id');
+}
 }

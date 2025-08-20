@@ -9,53 +9,90 @@ use App\Models\User;
 use App\Models\Vehiculo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class TurnoController extends Controller
 {
   public function index()
   {
-    $turnos = Auth::user()->role === 'admin'
-      ? Turno::with(['servicios', 'vehiculo', 'cliente', 'tiposTurno'])->get()
-      : Auth::user()->turnos()->with(['servicios', 'vehiculo', 'tiposTurno'])->get();
+    $hoy = now()->toDateString();
 
+    if (Auth::user()->role === 'admin') {
+      $turnos = Turno::with(['user', 'vehiculo', 'trabajos.servicio', 'tipoTurnos'])
+        ->whereDate('fecha', '>=', $hoy)
+        ->orderBy('fecha')
+        ->orderBy('hora_inicio')
+        ->get();
+
+      // dd($turnos);
+    } else {
+      $turnos = Turno::where('user_id', Auth::id())
+        ->with(['trabajos.servicio', 'vehiculo', 'tipoTurnos'])
+        ->whereDate('fecha', '>=', $hoy)
+        ->orderBy('fecha')
+        ->orderBy('hora_inicio')
+        ->get();
+    }
 
     return view('turnos.index', compact('turnos'));
   }
 
-  public function create()
-  {
-    $user = Auth::user();
-    $servicios = Servicio::all();
-    $tipoTurnos = TipoTurno::all(); // Traer tipos de turno
 
-    if ($user->role === 'admin') {
-      $clientes = User::where('role', 'usuario')->get();
-      $vehiculos = Vehiculo::all(); // Todos los vehículos (o filtrar por cliente si quieres)
-      return view('turnos.create', compact('clientes', 'vehiculos', 'servicios', 'tipoTurnos'));
+
+public function create()
+{
+    $tiposTurno = TipoTurno::all(); // Todos los tipos de turno
+    $servicios = Servicio::all();    // Todos los servicios
+
+    if(Auth::user()->role === 'admin') {
+        $usuarios = User::all();
+        $vehiculos = collect(); // se selecciona luego según usuario
     } else {
-      $vehiculos = $user->vehiculos;
-      return view('turnos.create', compact('vehiculos', 'servicios', 'tipoTurnos'));
+        $usuarios = collect([Auth::user()]);
+        $vehiculos = Auth::user()->vehiculos; // Vehículos propios
     }
-  }
 
-  public function store(Request $request)
-  {
-    $data = $request->validate([
-      'fecha_hora' => 'required|date',
-      'vehiculo_id' => 'required|exists:vehiculos,id',
-      'servicios' => 'required|array',
-      'servicios.*' => 'exists:servicios,id',
+    return view('turnos.create', compact('tiposTurno','servicios','usuarios','vehiculos'));
+}
+
+public function store(Request $request)
+{
+    $request->validate([
+        'user_id' => 'required|exists:users,id',
+        'vehiculo_id' => 'nullable|exists:vehiculos,id',
+        'nuevo_vehiculo' => 'nullable|string|max:50',
+        'fecha' => 'required|date',
+        'hora_inicio' => 'required',
+        'hora_fin' => 'required',
+        'trabajos.*.tipo_trabajo' => 'required',
+        'trabajos.*.servicio_id' => 'required|exists:servicios,id',
     ]);
 
-    $data['usuario_id'] = Auth::id();
+    $user_id = $request->user_id;
+    if($request->nuevo_vehiculo) {
+        $vehiculo = Vehiculo::create([
+            'user_id' => $user_id,
+            'patente' => $request->nuevo_vehiculo,
+        ]);
+        $vehiculo_id = $vehiculo->id;
+    } else {
+        $vehiculo_id = $request->vehiculo_id;
+    }
 
-    $turno = Turno::create($data);
+    $turno = Turno::create([
+        'user_id' => $user_id,
+        'vehiculo_id' => $vehiculo_id,
+        'fecha' => $request->fecha,
+        'hora_inicio' => $request->hora_inicio,
+        'hora_fin' => $request->hora_fin,
+    ]);
 
-    // Guardamos los servicios relacionados
-    $turno->servicios()->sync($request->servicios);
+    foreach ($request->trabajos as $trabajoData) {
+        $turno->trabajos()->create($trabajoData);
+    }
 
-    return redirect()->route('turnos.index')->with('success', 'Turno creado correctamente.');
-  }
+    return redirect()->route('turnos.index')->with('success','Turno creado correctamente.');
+}
 
   public function edit(Turno $turno)
   {

@@ -14,7 +14,7 @@
                     <select name="user_id" id="user_id" class="form-control">
                         @foreach ($usuarios as $u)
                             <option value="{{ $u->id }}" {{ old('user_id', $userId) == $u->id ? 'selected' : '' }}>
-                                {{ $u->name }} ({{ $u->email }})
+                                {{ $u->nombre }} ({{ $u->email }})
                             </option>
                         @endforeach
                     </select>

@@ -27,4 +27,5 @@ class Vehiculo extends Model
     {
         return $this->hasMany(TrabajoServicio::class);
     }
+
 }

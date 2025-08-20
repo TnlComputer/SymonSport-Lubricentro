@@ -21,16 +21,14 @@ class Turno extends Model
 
     // Relaciones
 
-    public function user()
+    public function tipoTurnos()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsToMany(TipoTurno::class, 'turno_tipo', 'turno_id', 'tipo_turno_id');
     }
 
-    // App/Models/Turno.php
-
-    public function cliente()
+    public function trabajos()
     {
-        return $this->belongsTo(User::class, 'usuario_id'); // 'usuario_id' es la FK que apunta al User
+        return $this->hasMany(TrabajoServicio::class);
     }
 
     public function vehiculo()
@@ -38,19 +36,12 @@ class Turno extends Model
         return $this->belongsTo(Vehiculo::class);
     }
 
-    // App/Models/Turno.php
-    public function servicios()
+    public function user()
     {
-        return $this->belongsToMany(Servicio::class, 'turno_servicio', 'turno_id', 'servicio_id');
+        return $this->belongsTo(User::class);
     }
 
 
-    // App/Models/Turno.php
-
-    public function tiposTurno()
-    {
-        return $this->belongsToMany(TipoTurno::class, 'turno_tipo_turno', 'turno_id', 'tipo_turno_id');
-    }
 
     // Mutador para manejar la fecha automáticamente con Carbon
     public function setFechaAttribute($value)

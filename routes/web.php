@@ -39,6 +39,10 @@ Route::middleware(['auth'])->group(function () {
   Route::resource('turnos', TurnoController::class);
   Route::resource('servicios', ServicioController::class)->except(['destroy', 'show']);
   Route::resource('trabajos', TrabajoServicioController::class)->except(['destroy', 'edit', 'update']);
+  // Vehículos de un usuario (para AJAX en turnos)
+  Route::get('/usuarios/{id}/vehiculos', [UserController::class, 'vehiculos'])
+    ->name('usuarios.vehiculos');
+  Route::post('/vehiculos/ajax', [VehiculoController::class, 'storeAjax'])->name('vehiculos.store.ajax');
 
   // Pedidos y Productos
   Route::resource('pedidos', PedidoController::class);
