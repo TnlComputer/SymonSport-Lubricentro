@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('stock_min')->default(0);
             $table->integer('stock_max')->default(0);
             $table->decimal('costo', 10, 2)->default(0);
-               $table->boolean('activo')->default(1); // 1 = activo, 0 = eliminado
+            $table->boolean('activo')->default(1); // 1 = activo, 0 = eliminado
             $table->timestamps();
         });
     }

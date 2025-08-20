@@ -16,6 +16,7 @@ return new class extends Migration
             $table->time('hora_inicio');
             $table->time('hora_fin');
             $table->string('estado')->default('pendiente');
+            $table->boolean('activo')->default(1); // 1 = activo, 0 = eliminado
             $table->timestamps();
         });
     }

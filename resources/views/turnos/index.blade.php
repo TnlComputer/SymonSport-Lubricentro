@@ -25,6 +25,7 @@
                         <th>Vehículo</th>
                         <th>Tipos de Turno</th>
                         <th>Servicios</th>
+                        <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -40,21 +41,21 @@
                             <td>{{ $turno->user->name ?? 'N/A' }}</td>
                             <td>{{ $turno->vehiculo->patente ?? 'N/A' }}</td>
                             <td>
-                                {{-- @foreach ($turno->tipoTurnos as $tipo)
+                                @foreach ($turno->tipoTurnos as $tipo)
                                     {{ $tipo->nombre }}@if (!$loop->last)
                                         ,
                                     @endif
-                                @endforeach --}}
-                                @foreach ($turno->trabajos as $trabajo)
-                                    {{ $trabajo->tipo_trabajo }}
                                 @endforeach
                             </td>
                             <td>
-                                <ul>
-                                    @foreach ($turno->trabajos as $trabajo)
-                                        {{ $trabajo->servicio->nombre ?? 'Servicio no asignado' }}
-                                    @endforeach
-                                </ul>
+                                @foreach ($turno->servicios as $servicio)
+                                    {{ $servicio->nombre }}@if (!$loop->last)
+                                        ,
+                                    @endif
+                                @endforeach
+                            </td>
+                            <td>
+                                {{ $turno->estado }}
                             </td>
                             <td>
                                 <a href="{{ route('turnos.edit', $turno->id) }}" class="btn btn-sm btn-warning">Editar</a>

@@ -14,7 +14,7 @@ return new class extends Migration
             $table->foreignId('vehiculo_id')->constrained('vehiculos')->onDelete('cascade');
             $table->date('fecha');
             $table->decimal('total', 10, 2)->default(0);
-               $table->boolean('activo')->default(1); // 1 = activo, 0 = eliminado
+            $table->boolean('activo')->default(1); // 1 = activo, 0 = eliminado
             $table->timestamps();
         });
     }

@@ -27,6 +27,8 @@ class Servicio extends Model
 
     public function turnos()
     {
-        return $this->belongsToMany(Turno::class, 'servicio_turno');
+        return $this->belongsToMany(Turno::class, 'turno_servicio', 'servicio_id', 'turno_id')
+            ->withPivot('cantidad', 'estado', 'activo')
+            ->withTimestamps();
     }
 }

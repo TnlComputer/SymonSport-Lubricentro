@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignId('servicio_id')->constrained('servicios')->onDelete('cascade');
             $table->foreignId('producto_id')->constrained('productos')->onDelete('cascade');
             $table->integer('cantidad')->default(1);
-               $table->boolean('activo')->default(1); // 1 = activo, 0 = eliminado
+            $table->boolean('activo')->default(1); // 1 = activo, 0 = eliminado
             $table->timestamps();
         });
     }
@@ -23,4 +23,3 @@ return new class extends Migration
         Schema::dropIfExists('servicio_producto');
     }
 };
-
