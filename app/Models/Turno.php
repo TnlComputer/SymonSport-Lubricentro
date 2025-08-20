@@ -16,10 +16,11 @@ class Turno extends Model
         'hora_inicio',
         'hora_fin',
         'estado',
-        'activo', 
+        'activo',
     ];
 
     protected $casts = [
+        'fecha' => 'datetime',
         'activo' => 'boolean',
     ];
 

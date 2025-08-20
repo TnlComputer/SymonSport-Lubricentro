@@ -8,6 +8,7 @@ use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ContactoController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ServicioController;
 use App\Http\Controllers\TrabajoServicioController;
 
@@ -80,8 +81,11 @@ Route::middleware(['auth'])->group(function () {
 // -------------------
 // Rutas protegidas para usuarios autenticados y verificados
 // -------------------
+// Route::middleware(['auth', 'verified'])->group(function () {
+//   Route::get('/home', fn() => view('home'))->name('home');
+// });
 Route::middleware(['auth', 'verified'])->group(function () {
-  Route::get('/home', fn() => view('home'))->name('home');
+  Route::get('/home', [HomeController::class, 'index'])->name('home');
 });
 
 // -------------------

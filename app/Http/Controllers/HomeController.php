@@ -2,41 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Turno;
 use Illuminate\Http\Request;
+use App\Models\Turno;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
+        $hoy = now()->toDateString();
 
-        // Inicializamos variables por defecto
-        $turnosFuturos = collect();
-        $mensaje = 'No hay turnos próximos.';
-
-        if ($user) {
-            if ($user->role === 'admin') {
-                // Admin ve todos los turnos futuros
-                $turnosFuturos = Turno::whereDate('fecha_hora', '>=', now())->get();
-            } else {
-                $turnosFuturos = Turno::whereDate('fecha_hora', '>=', now())->get();
-                // Usuario ve solo sus turnos futuros
-                // if (method_exists($user, 'turnos')) {
-                //     $turnosFuturos = $user->turnos()
-                //         ->whereDate('fecha_hora', '>=', now())
-                //         ->get();
-                // }
-            }
-
-            // Actualizamos mensaje si hay turnos
-            if ($turnosFuturos->isNotEmpty()) {
-                $mensaje = '';
-            }
+        if (Auth::user()->role === 'admin') {
+            $turnosFuturos = Turno::with(['tipoTurnos', 'servicios', 'user', 'vehiculo'])
+                ->where('activo', true)
+                ->whereDate('fecha', '>=', $hoy)
+                ->orderBy('fecha')
+                ->orderBy('hora_inicio')
+                ->get();
+        } else {
+            $turnosFuturos = Turno::where('user_id', Auth::id())
+                ->with(['tipoTurnos', 'servicios', 'vehiculo'])
+                ->where('activo', true)
+                ->whereDate('fecha', '>=', $hoy)
+                ->orderBy('fecha')
+                ->orderBy('hora_inicio')
+                ->get();
         }
-        dd(get_class($user));  // Ver qué clase de modelo es realmente
-        dd(method_exists($user, 'turnos')); // Esto debería dar true
+
+        $mensaje = $turnosFuturos->isEmpty() ? 'No tienes turnos próximos.' : '';
 
         return view('home', compact('turnosFuturos', 'mensaje'));
     }

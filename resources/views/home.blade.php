@@ -21,24 +21,26 @@
                         <i class="fas fa-user-shield"></i> Perfil Administrador
                     </h5>
                 @endif
-
                 <h6 class="mb-3 mt-5">Próximos turnos</h6>
-
                 @if (isset($turnosFuturos) && $turnosFuturos->isEmpty())
-                    <p>{{ $mensaje }}</p>
+                    <p>{{ $mensaje ?? 'No tienes turnos próximos.' }}</p>
                 @elseif(isset($turnosFuturos))
                     <div class="row">
-                        @foreach ($turnosFuturos->sortBy(['fecha', 'hora']) as $turno)
+                        @foreach ($turnosFuturos->sortBy(['fecha', 'hora_inicio']) as $turno)
                             <div class="col-md-4 mb-3">
                                 <div class="card {{ $turno->fecha->isToday() ? 'bg-warning text-dark' : '' }}">
                                     <div class="card-body">
-                                        <h5 class="card-title">{{ $turno->tiposTurno->pluck('nombre')->join(', ') }}</h5>
+                                        <h5 class="card-title">
+                                            {{ $turno->tipoTurnos->pluck('nombre')->join(', ') }}
+                                        </h5>
                                         <p class="card-text">
                                             @if (auth()->user()->role === 'admin')
-                                                <strong>Cliente:</strong> {{ $turno->cliente->name }}<br>
+                                                <strong>Cliente:</strong>
+                                                {{ $turno->user->nombre ?? ($turno->user->name ?? 'N/A') }}<br>
                                             @endif
-                                            <strong>Fecha:</strong> {{ $turno->fecha->format('d/m/Y') }}<br>
-                                            <strong>Hora:</strong> {{ $turno->hora }}<br>
+                                            <strong>Fecha:</strong>
+                                            {{ \Carbon\Carbon::parse($turno->fecha)->format('d/m/Y') }}<br>
+                                            <strong>Hora:</strong> {{ $turno->hora_inicio }} - {{ $turno->hora_fin }}<br>
                                             <strong>Servicios:</strong>
                                             {{ $turno->servicios->pluck('nombre')->join(', ') }}<br>
                                             <strong>Vehículo:</strong> {{ $turno->vehiculo->patente ?? '-' }}
@@ -50,7 +52,6 @@
                         @endforeach
                     </div>
                 @endif
-
             </div>
         </div>
     </div>

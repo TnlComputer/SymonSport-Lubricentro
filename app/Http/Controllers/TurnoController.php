@@ -15,29 +15,6 @@ use Illuminate\Support\Facades\Validator;
 
 class TurnoController extends Controller
 {
-  // public function index()
-  // {
-  //   $hoy = now()->toDateString();
-
-  //   if (Auth::user()->role === 'admin') {
-  //     $turnos = Turno::with(['user', 'vehiculo', 'trabajos.servicio', 'tipoTurnos'])
-  //       ->whereDate('fecha', '>=', $hoy)
-  //       ->where('activo', true)
-  //       ->orderBy('fecha')
-  //       ->orderBy('hora_inicio')
-  //       ->get();
-  //   } else {
-  //     $turnos = Turno::where('user_id', Auth::id())
-  //       ->with(['trabajos.servicio', 'vehiculo', 'tipoTurnos'])
-  //       ->whereDate('fecha', '>=', $hoy)
-  //       ->where('activo', true)
-  //       ->orderBy('fecha')
-  //       ->orderBy('hora_inicio')
-  //       ->get();
-  //   }
-
-  //   return view('turnos.index', compact('turnos'));
-  // }
   public function index()
   {
     $hoy = now()->toDateString();
