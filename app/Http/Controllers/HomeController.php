@@ -16,7 +16,7 @@ class HomeController extends Controller
         if (Auth::user()->role === 'admin') {
             $turnosFuturos = Turno::with(['tipoTurnos', 'servicios', 'user', 'vehiculo'])
                 ->where('activo', true)
-                ->whereDate('fecha', '>=', $hoy)
+                ->whereDate('fecha', '=', $hoy)
                 ->orderBy('fecha')
                 ->orderBy('hora_inicio')
                 ->get();
@@ -24,14 +24,14 @@ class HomeController extends Controller
             $turnosFuturos = Turno::where('user_id', Auth::id())
                 ->with(['tipoTurnos', 'servicios', 'vehiculo'])
                 ->where('activo', true)
-                ->whereDate('fecha', '>=', $hoy)
+                ->whereDate('fecha', '=', $hoy)
                 ->orderBy('fecha')
                 ->orderBy('hora_inicio')
                 ->get();
         }
 
-        $mensaje = $turnosFuturos->isEmpty() ? 'No tienes turnos próximos.' : '';
+        $mensaje = $turnosFuturos->isEmpty() ? 'No tienes turnos hoy.' : '';
 
-        return view('home', compact('turnosFuturos', 'mensaje'));
+        return view('home', compact('turnosFuturos', 'mensaje', 'hoy'));
     }
 }

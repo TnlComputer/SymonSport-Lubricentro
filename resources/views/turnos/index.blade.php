@@ -35,7 +35,7 @@
                             @if (auth()->user()->role === 'admin')
                                 <td>{{ $turno->user->nombre ?? 'N/A' }}</td>
                             @endif
-                            <td>{{ $turno->fecha }}</td>
+                            <td>{{ \Carbon\Carbon::parse($turno->fecha)->format('d/m/Y') }}</td>
                             <td>{{ $turno->hora_inicio }}</td>
                             <td>{{ $turno->hora_fin }}</td>
                             <td>{{ $turno->user->name ?? 'N/A' }}</td>

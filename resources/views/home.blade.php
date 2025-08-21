@@ -21,7 +21,7 @@
                         <i class="fas fa-user-shield"></i> Perfil Administrador
                     </h5>
                 @endif
-                <h6 class="mb-3 mt-5">Próximos turnos</h6>
+                <h6 class="mb-3 mt-5">Próximos del {{ \Carbon\Carbon::parse($hoy)->format('d/m/Y') }}</h6>
                 @if (isset($turnosFuturos) && $turnosFuturos->isEmpty())
                     <p>{{ $mensaje ?? 'No tienes turnos próximos.' }}</p>
                 @elseif(isset($turnosFuturos))
