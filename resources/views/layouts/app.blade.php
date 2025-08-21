@@ -25,9 +25,9 @@
 
         <!-- Sidebar -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
-            <a href="{{ url('/') }}" class="brand-link text-center">
+            {{-- <a href="{{ url('/') }}" class="brand-link text-center">
                 <span class="brand-text font-weight-light">Lubricentro</span>
-            </a>
+            </a> --}}
             <div class="sidebar">
                 <ul class="nav nav-pills nav-sidebar flex-column" role="menu">
                     @include('layouts.navigation')

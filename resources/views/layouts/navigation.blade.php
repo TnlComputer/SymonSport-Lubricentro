@@ -1,5 +1,5 @@
 <li>
-    <a href="{{ route('home') }}" class="brand-link text-center">
+    <a href="{{ url('/') }}" class="brand-link text-center">
         <img src="{{ asset('./build/img/logo_ssp150_trans.png') }}" alt="Lubricentro"
             class="brand-image img-circle elevation-3" style="opacity: .8">
         <span class="brand-text font-weight-light">Lubricentro</span>
