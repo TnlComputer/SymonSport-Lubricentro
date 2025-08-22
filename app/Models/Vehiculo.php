@@ -16,6 +16,7 @@ class Vehiculo extends Model
         'anio',
         'observaciones',
         'user_id',
+        'activo',
     ];
 
     public function user()
@@ -27,5 +28,4 @@ class Vehiculo extends Model
     {
         return $this->hasMany(TrabajoServicio::class);
     }
-
 }

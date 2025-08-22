@@ -13,6 +13,7 @@ class Servicio extends Model
         'nombre',
         'duracion',
         'tipo_turno_id',
+        'activo'
     ];
 
     public function tipoTurno()

@@ -19,6 +19,7 @@ class Producto extends Model
         'stock_maximo',
         'stock',
         'status',
+        'activo',
     ];
 
     protected $casts = [

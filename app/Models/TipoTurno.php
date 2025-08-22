@@ -11,9 +11,7 @@ class TipoTurno extends Model
 
     protected $table = 'tipo_turnos'; // asegúrate que coincida con la DB
 
-    protected $fillable = [
-        'nombre',
-    ];
+    protected $fillable = ['nombre', 'activo'];
 
     public function turnos()
     {

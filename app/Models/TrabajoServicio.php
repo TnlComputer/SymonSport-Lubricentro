@@ -20,6 +20,7 @@ class TrabajoServicio extends Model
         'tipo_trabajo',
         'user_id',
         'fecha',
+        'activo',
     ];
 
     protected $dates = ['fecha'];

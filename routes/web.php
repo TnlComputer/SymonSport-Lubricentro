@@ -1,21 +1,24 @@
 <?php
 
-use App\Http\Controllers\Admin\ConfiguracionController;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\TurnoController;
-use App\Http\Controllers\VehiculoController;
-use App\Http\Controllers\PedidoController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ProductoController;
-use App\Http\Controllers\ContactoController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ServicioController;
-use App\Http\Controllers\TrabajoServicioController;
-
-use App\Http\Middleware\AdminMiddleware;
+use App\Http\Controllers\Admin\ConfigProductoController;
+use App\Http\Controllers\Admin\ConfigServicioController;
+use App\Http\Controllers\Admin\ConfigTipoTurnoController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
+
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ContactoController;
+use App\Http\Controllers\VehiculoController;
+use App\Http\Controllers\TurnoController;
+use App\Http\Controllers\PedidoController;
+use App\Http\Controllers\ServicioController;
+use App\Http\Controllers\TrabajoServicioController;
+use App\Http\Controllers\ProductoController;
+
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Middleware\AdminMiddleware;
 
 // -------------------
 // Rutas públicas
@@ -40,7 +43,8 @@ Route::middleware(['auth'])->group(function () {
   Route::resource('turnos', TurnoController::class);
   Route::resource('servicios', ServicioController::class)->except(['destroy', 'show']);
   Route::resource('trabajos', TrabajoServicioController::class)->except(['destroy', 'edit', 'update']);
-  // Vehículos de un usuario (para AJAX en turnos)
+
+  // Vehículos de un usuario (AJAX en turnos)
   Route::get('/usuarios/{id}/vehiculos', [UserController::class, 'vehiculos'])
     ->name('usuarios.vehiculos');
   Route::post('/vehiculos/ajax', [VehiculoController::class, 'storeAjax'])->name('vehiculos.store.ajax');
@@ -53,18 +57,35 @@ Route::middleware(['auth'])->group(function () {
 // -------------------
 // Rutas de administrador
 // -------------------
+Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->name('admin.')->group(function () {
+  Route::resource('users', UserController::class);
+});
+
+// -------------------
+// Rutas de configuración (solo admin)
+// -------------------
 Route::middleware(['auth', AdminMiddleware::class])
-  ->prefix('admin')
-  ->name('admin.')
+  ->prefix('admin/configuracion')
+  ->name('config.')
   ->group(function () {
-    Route::resource('users', UserController::class);
-    Route::resource('config', ConfiguracionController::class);
+
+    // Servicios
+    Route::resource('servicios', ConfigServicioController::class);
+
+    // Tipos de Turno
+    Route::resource('tipos-turno', ConfigTipoTurnoController::class);
+
+    // Productos
+    Route::resource('productos', ConfigProductoController::class);
   });
+
+
 
 // -------------------
 // Rutas de verificación de email
 // -------------------
 Route::middleware(['auth'])->group(function () {
+
   Route::get('/email/verify', fn() => view('auth.verify-email'))->name('verification.notice');
 
   Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
@@ -79,16 +100,13 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // -------------------
-// Rutas protegidas para usuarios autenticados y verificados
+// Ruta Home (auth + verified)
 // -------------------
-// Route::middleware(['auth', 'verified'])->group(function () {
-//   Route::get('/home', fn() => view('home'))->name('home');
-// });
 Route::middleware(['auth', 'verified'])->group(function () {
   Route::get('/home', [HomeController::class, 'index'])->name('home');
 });
 
 // -------------------
-// Autenticación (Laravel Breeze / Jetstream)
+// Autenticación Laravel Breeze / Jetstream
 // -------------------
 require __DIR__ . '/auth.php';
