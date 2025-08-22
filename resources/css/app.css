@@ -2,158 +2,127 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Variables de color */
+/* 🎨 Variables de color */
 :root {
-    --color-principal: #0d6efd;
-    --color-secundario: #ffc107;
-    --color-texto: #333333;
+  --color-principal: #0d6efd;
+  --color-secundario: #ffc107;
+  --color-texto: #333333;
+  --color-fondo: #f8f9fa;
 }
 
-/* General */
+/* 🌐 General */
 body {
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    color: var(--color-texto);
-    background-color: #f8f9fa;
-    line-height: 1.5;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--color-texto);
+  background-color: var(--color-fondo);
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
 }
 
-/* Navbar personalizada */
+/* 🔝 Navbar */
 .navbar,
 nav {
-    background-color: var(--color-principal) !important;
-    padding: 0.75rem 1rem;
+  background-color: var(--color-principal);
+  padding: 0.75rem 1rem;
 }
 
-/* Botones personalizados */
+/* 🔘 Botones */
 .btn-primary {
-    background-color: var(--color-principal);
-    border-color: var(--color-principal);
+  background-color: var(--color-principal);
+  border-color: var(--color-principal);
 }
 .btn-outline-primary {
-    color: var(--color-principal);
-    border-color: var(--color-principal);
+  color: var(--color-principal);
+  border-color: var(--color-principal);
 }
 .btn-outline-primary:hover {
-    background-color: var(--color-principal);
-    color: #fff;
+  background-color: var(--color-principal);
+  color: #fff;
 }
 
-/* Tarjetas */
+/* 📦 Tarjetas */
 .card {
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease-in-out;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 .card:hover {
-    transform: translateY(-4px);
+  transform: translateY(-6px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
 }
 .card-title {
-    font-weight: bold;
+  font-weight: bold;
 }
 
-/* Footer */
-footer {
-    background-color: #ffffff;
-    border-top: 1px solid #ddd;
-    color: #666;
-    padding: 1rem;
+/* 🖼️ Imágenes uniformes */
+.uniform-img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+@media (min-width: 768px) {
+  .uniform-img { height: 300px; }
+}
+
+/* 📝 Formularios */
+form label { font-weight: bold; }
+
+/* ===========================
+   Sidebar & Responsive
+=========================== */
+
+/* Sidebar, header, content y footer transiciones suaves */
+.main-sidebar,
+.content-wrapper,
+.main-header,
+.main-footer {
+  transition: all 0.3s ease;
+}
+
+/* AdminLTE maneja hover y pushmenu, no se necesita CSS extra */
+
+/* ===========================
+   Footer con QR responsive
+=========================== */
+
+footer.main-footer {
+  background-color: #ffffff;
+  border-top: 1px solid #ddd;
+  color: #666;
+  padding: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+/* QR AFIP */
+footer.main-footer .afip {
+  margin-left: auto; /* derecha en desktop */
+}
+footer.main-footer .logo-afip {
+  width: 40px;
+  height: auto;
+  transition: transform 0.3s ease-in-out;
+}
+footer.main-footer .logo-afip:hover {
+  transform: scale(1.05);
+}
+
+/* En móviles: QR arriba y más pequeño */
+@media (max-width: 576px) {
+  footer.main-footer {
+    flex-direction: column; /* QR encima del texto */
     text-align: center;
-}
-
-.logo-afip {
-    width: 40px; /* tamaño reducido */
-    height: auto;
-    transition: transform 0.3s ease-in-out;
-}
-.logo-afip:hover {
-    transform: scale(1.05);
-}
-
-/* Formulario */
-form label {
-    font-weight: bold;
-}
-
-/* Sidebar responsive para tablet y móvil */
-@media (max-width: 991px) {
-    body.sidebar-mini .main-sidebar,
-    body.sidebar-mini-md .main-sidebar,
-    .main-sidebar {
-        width: 60px !important;
-        transform: translateX(0) !important;
-        position: fixed !important;
-        top: 0;
-        left: 0;
-        height: 100% !important;
-        z-index: 1038 !important;
-        margin-left: 0 !important;
-    }
-
-    /* Logo y separador */
-    .main-sidebar .brand-link {
-        width: 60px;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start; /* Alinear a la izquierda */
-        justify-content: center;
-        padding: 0.5rem 0;
-    }
-
-    .brand-link .brand-image {
-        float: left;
-        line-height: 0.8;
-        margin-left: -2px;
-        margin-top: -3px;
-        max-height: 33px;
-        display: block !important;
-    }
-
-    .brand-text {
-        display: none !important;
-    }
-    .brand-image {
-        display: block;
-        margin: 0 auto;
-        width: 40px;
-        height: 40px;
-    }
-
-    .main-sidebar .brand-link::after {
-        content: "";
-        display: block;
-        width: 40px;
-        /* height: 2px; */
-        background-color: rgba(255, 255, 255, 0.3);
-        margin-top: 0.25rem;
-        border-radius: 1px;
-    }
-
-    /* Mostrar solo íconos y centrar */
-    .main-sidebar .nav-icon {
-        display: inline-block !important;
-        font-size: 1.2rem;
-        margin-right: 0 !important;
-    }
-    .main-sidebar .nav-link {
-        justify-content: center !important;
-        /* text-align: center; */
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
-    }
-    .main-sidebar .menu-text {
-        display: none !important;
-    }
-
-    /* Botón cerrar sesión: mantener texto */
-    .main-sidebar .nav-item.mt-auto .menu-text {
-        display: inline !important;
-    }
-
-    /* Ajustar contenido principal */
-    .content-wrapper,
-    .main-footer,
-    .main-header {
-        margin-left: 60px !important;
-    }
+  }
+  footer.main-footer .afip {
+    margin-left: 0;
+    margin-bottom: 0.5rem;
+  }
+  footer.main-footer .logo-afip {
+    width: 30px; /* más pequeño */
+  }
 }

@@ -2,8 +2,8 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Lubricentro')</title>
 
     <!-- Bootstrap 4.6 -->
@@ -12,10 +12,10 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
-    <!-- AdminLTE 3.2 -->
+    <!-- AdminLTE -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
 
-    <!-- Tus estilos -->
+    <!-- CSS personalizado -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -23,13 +23,44 @@
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
 
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <!-- Botón hamburguesa AdminLTE -->
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button">
+                        <i class="fas fa-bars"></i>
+                    </a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                @auth
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" data-toggle="dropdown" href="#"><i class="far fa-user"></i></a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a href="{{ route('profile.edit') }}" class="dropdown-item">Perfil</a>
+                            <div class="dropdown-divider"></div>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="dropdown-item">Cerrar sesión</button>
+                            </form>
+                        </div>
+                    </li>
+                @endauth
+            </ul>
+        </nav>
+
         <!-- Sidebar -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
-            {{-- <a href="{{ url('/') }}" class="brand-link text-center">
+            <a href="{{ url('/') }}" class="brand-link">
+                <img src="{{ asset('build/img/logo_ssp150_trans.png') }}" alt="Lubricentro"
+                    class="brand-image img-circle elevation-3">
                 <span class="brand-text font-weight-light">Lubricentro</span>
-            </a> --}}
+            </a>
+
             <div class="sidebar">
-                <ul class="nav nav-pills nav-sidebar flex-column" role="menu">
+                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                    data-accordion="false">
                     @include('layouts.navigation')
                 </ul>
             </div>
@@ -41,16 +72,10 @@
         </div>
 
         <!-- Footer -->
-        <footer class="main-footer py-3 mt-auto bg-light">
+        <footer class="main-footer py-4 mt-auto bg-light">
             <div class="container position-relative d-flex align-items-center">
-                <!-- Texto centrado -->
-                <small class="mx-auto text-center">
-                    © 2025 Lubricentro - Todos los derechos reservados
-                </small>
-
-                <!-- QR a la derecha -->
-                <a class="afip position-absolute end-0" href="http://qr.afip.gob.ar/?qr=FQNxsrMFMu2Jj0XuTMYpsQ,,"
-                    target="_F960AFIPInfo">
+                <small class="mx-auto text-center text-wrap">© 2025 Lubricentro - Todos los derechos reservados</small>
+                <a class="afip position-absolute end-0" href="http://qr.afip.gob.ar" target="_blank">
                     <img src="https://www.afip.gob.ar/images/f960/DATAWEB.jpg" alt="QR AFIP"
                         class="logo-afip img-fluid">
                 </a>
@@ -58,17 +83,10 @@
         </footer>
     </div>
 
-    <!-- Scripts en el orden correcto -->
-    <!-- jQuery (necesario para AdminLTE 3) -->
+    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
-    <!-- Bootstrap 4.6 -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- AdminLTE 3.2 -->
     <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
-
-    <!-- Scripts propios -->
     @stack('scripts')
 </body>
 
