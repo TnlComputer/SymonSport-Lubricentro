@@ -7,41 +7,55 @@ use App\Models\Producto;
 
 class ProductosSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
+        // Array de productos de ejemplo
         $productos = [
             [
-                'nombre' => 'Aceite 10W40',
+                'articulo' => 'Aceite 5W30',
                 'descripcion' => 'Aceite sintético para motores',
-                'precio' => 5000,
-                'stock' => 50,
-                'stock_min' => 10,
-                'stock_max' => 200,
-                'costo' => 3500,
+                'proveedor' => 'Lubricentro S.A.',
+                'costo' => 80,
+                'venta' => 150,
+                'stock' => 20,
             ],
             [
-                'nombre' => 'Filtro de aceite',
-                'descripcion' => 'Filtro de repuesto',
-                'precio' => 1500,
-                'stock' => 100,
-                'stock_min' => 20,
-                'stock_max' => 300,
-                'costo' => 800,
+                'articulo' => 'Filtro de aceite',
+                'descripcion' => 'Filtro para autos',
+                'proveedor' => 'Filtros SA',
+                'costo' => 30,
+                'venta' => 60,
+                'stock' => 50,
             ],
+            // Agregá más productos según necesites
         ];
 
         foreach ($productos as $p) {
-            Producto::updateOrCreate(
-                ['nombre' => $p['nombre']],
-                [
-                    'descripcion' => $p['descripcion'],
-                    'precio' => $p['precio'],
-                    'stock' => $p['stock'],
-                    'stock_min' => $p['stock_min'],
-                    'stock_max' => $p['stock_max'],
-                    'costo' => $p['costo'],
-                ]
-            );
+            // Crear producto
+            $producto = Producto::create([
+                'articulo' => $p['articulo'],
+                'descripcion' => $p['descripcion'],
+                'proveedor' => $p['proveedor'],
+                'activo' => 1,
+            ]);
+
+            // Crear precio inicial
+            $producto->precios()->create([
+                'costo' => $p['costo'],
+                'venta' => $p['venta'],
+                'fecha_desde' => now(),
+                'activo' => 1,
+            ]);
+
+            // Crear stock inicial
+            $producto->stocks()->create([
+                'tipo_movimiento' => 'ingreso',
+                'cantidad' => $p['stock'],
+                'stock_total' => $p['stock'],
+                'descripcion' => 'Stock inicial',
+                'fecha_movimiento' => now(),
+                'activo' => 1,
+            ]);
         }
     }
 }
